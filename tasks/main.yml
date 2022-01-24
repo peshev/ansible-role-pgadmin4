@@ -38,6 +38,14 @@
     path: /etc/apache2/conf-enabled/pgadmin4.conf
     state: link
   notify: restart apache2
+- name: Apply system-wide pgadmin4 configuration
+  lineinfile:
+    path: "{{ pgadmin4_system_config_path }}"
+    regexp: "^{{ item.key }}\\s*=\\s*.*"
+    line: "{{ item.key }} = {{ item.value }}"
+    create: yes
+  with_dict: "{{ pgadmin4_system_config }}"
+  notify: restart apache2
 - name: Start and enable apache2 service
   service:
     name: apache2

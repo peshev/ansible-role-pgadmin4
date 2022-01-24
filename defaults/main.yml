@@ -5,3 +5,6 @@ pgadmin4_data_dir: /var/lib/pgadmin
 pgadmin4_sqlite_path: "{{ pgadmin4_data_dir }}/pgadmin4.db"
 pgadmin4_admin_email: ~
 pgadmin4_admin_password: ~
+pgadmin4_system_config_dir: /etc/pgadmin
+pgadmin4_system_config_path: "{{ pgadmin4_system_config_dir }}/config_system.py"
+pgadmin4_system_config: {}
