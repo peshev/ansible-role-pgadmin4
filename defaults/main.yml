@@ -1,0 +1,7 @@
+pgadmin4_repository_url: "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ ansible_distribution_release }} pgadmin4 main"
+pgadmin4_repository_key_url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
+pgadmin4_home_dir: /usr/pgadmin4
+pgadmin4_data_dir: /var/lib/pgadmin
+pgadmin4_sqlite_path: "{{ pgadmin4_data_dir }}/pgadmin4.db"
+pgadmin4_admin_email: ~
+pgadmin4_admin_password: ~

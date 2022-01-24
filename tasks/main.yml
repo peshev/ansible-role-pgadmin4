@@ -1,0 +1,45 @@
+# https://www.pgadmin.org/download/pgadmin-4-apt/
+
+- name: Install the public key for the repository
+  apt_key:
+    url: "{{ pgadmin4_repository_key_url }}"
+- name: Create the repository configuration file
+  apt_repository:
+    repo: "{{ pgadmin4_repository_url }}"
+    filename: pgadmin4
+- name: Install for web mode only
+  apt:
+    update_cache: yes
+    name: pgadmin4-web
+- name: Creating configuration database
+  expect:
+    command: "{{ pgadmin4_home_dir }}/venv/bin/python3 {{ pgadmin4_home_dir }}/web/setup.py"
+    creates: "{{ pgadmin4_sqlite_path }}"
+    responses:
+      "Email address: ": "{{ pgadmin4_admin_email }}"
+      "Password: ": "{{ pgadmin4_admin_password }}"
+      "Retype password: ": "{{ pgadmin4_admin_password }}"
+  when: pgadmin4_admin_email and pgadmin4_admin_password
+- name: Creating storage and log directories
+  file:
+    path: "{{ item }}"
+    owner: www-data
+    group: www-data
+  loop:
+    - /var/log/pgadmin
+    - /var/lib/pgadmin
+- name: Enable apache2 wsgi module
+  apache2_module:
+    name: wsgi
+  notify: restart apache2
+- name: Enable apache2 pgadmin4 configuration
+  file:
+    src: /etc/apache2/conf-available/pgadmin4.conf
+    path: /etc/apache2/conf-enabled/pgadmin4.conf
+    state: link
+  notify: restart apache2
+- name: Start and enable apache2 service
+  service:
+    name: apache2
+    state: started
+    enabled: yes
